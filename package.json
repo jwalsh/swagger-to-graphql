@@ -44,6 +44,6 @@
     "lint": "eslint src/",
     "prepublish": "npm run build",
     "start": "node example/app.js",
-    "test": "mocha"
+    "test": "npm run build && mocha"
   }
 }

@@ -42,10 +42,10 @@ const schemaFromEndpoints = (endpoints: Endpoints) => {
   return new GraphQLSchema(graphQLSchema);
 };
 
-const resolver = (endpoint: Endpoint) =>
-      async (_, args: GraphQLParameters, opts: SwaggerToGraphQLOptions) => {
-        console.log('resolver', endpoint);
+const resolver = (endpoint: Endpoint) => {
+  async (_, args: GraphQLParameters, opts: SwaggerToGraphQLOptions) => {
     const req = endpoint.request(args, opts.GQLProxyBaseUrl);
+    // schema.securityDefinitions.Bearer.name
     if (opts.BearerToken) {
       // https://jwt.io/introduction/
       // credentials = "Bearer" 1*SP b64token
@@ -57,6 +57,7 @@ const resolver = (endpoint: Endpoint) =>
     const res = await rp(req);
     return JSON.parse(res);
   };
+};
 
 const getQueriesFields = (endpoints: Endpoints, isMutation: boolean): {[string]: GraphQLType} => {
   return Object.keys(endpoints).filter((typeName: string) => {
