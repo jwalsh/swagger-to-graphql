@@ -43,10 +43,16 @@ const schemaFromEndpoints = (endpoints: Endpoints) => {
 };
 
 const resolver = (endpoint: Endpoint) =>
-  async (_, args: GraphQLParameters, opts: SwaggerToGraphQLOptions) => {
+      async (_, args: GraphQLParameters, opts: SwaggerToGraphQLOptions) => {
+        console.log('resolver', endpoint);
     const req = endpoint.request(args, opts.GQLProxyBaseUrl);
     if (opts.BearerToken) {
-      req.headers.Authorization = opts.BearerToken;
+      // https://jwt.io/introduction/
+      // credentials = "Bearer" 1*SP b64token
+      // https://tools.ietf.org/html/rfc6750
+      req.headers.Authorization = `Bearer ${opts.BearerToken}`;
+      // Short-cut while looking at honoring the name of the bearer in the spec
+      req.headers['X-Auth-Token'] = opts.BearerToken;
     }
     const res = await rp(req);
     return JSON.parse(res);
